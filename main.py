@@ -44,7 +44,7 @@ async def main():
             y += SPEED
 
         # DRAW
-        screen.fill((30, 30, 60)) //RGB
+        screen.fill((30, 30, 60)) #RGB
 
         pygame.draw.rect(
             screen,
