@@ -37,6 +37,10 @@ async def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     controlling_rect = not controlling_rect  # החלף
+                if event.key == pygame.K_s:
+                # החלף בין מיקומי העיגול והריבוע
+                    x_re, x_cir = x_cir, x_re
+                    y_re, y_cir = y_re, y_cir
 
         # INPUT
         keys = pygame.key.get_pressed()
