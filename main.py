@@ -24,7 +24,7 @@ y_cir = PLAYER_SIZE
 controlling_rect = True
 
 async def main():
-    global x_re, y_re, x_cir, y_cir
+    global x_re, y_re, x_cir, y_cir ,controlling_rect
 
     running = True
 
@@ -75,15 +75,15 @@ async def main():
         pygame.draw.circle(
             screen,
             (100, 200, 255),
-            (x_cir, y_cir)), PLAYER_SIZE //2 #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
+            (x_cir, y_cir), PLAYER_SIZE //2 #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
         )
         #ריבוע
-        x_re = max(0, min(x, WIDTH - PLAYER_SIZE))
-        y_re = max(0, min(y, HEIGHT - PLAYER_SIZE))
+        x_re = max(0, min(x_re, WIDTH - PLAYER_SIZE))
+        y_re = max(0, min(y_re, HEIGHT - PLAYER_SIZE))
 
         #עיגול
-        x_cir = max(0, min(x, WIDTH - PLAYER_SIZE))
-        y_cir = max(0, min(y, HEIGHT - PLAYER_SIZE))
+        x_cir = max(radius, min(x_cir, WIDTH - radius))
+        y_cir = max(radius, min(y_cir, HEIGHT - radius))
         
         pygame.display.flip()
 
