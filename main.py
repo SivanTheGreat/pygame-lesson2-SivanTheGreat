@@ -75,7 +75,7 @@ async def main():
         pygame.draw.circle(
             screen,
             (100, 200, 255),
-            (x_cir, y_cir, PLAYER_SIZE //2) #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
+            (x_cir, y_cir)), PLAYER_SIZE //2 #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
         )
         
         pygame.display.flip()
