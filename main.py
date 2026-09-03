@@ -12,12 +12,19 @@ SPEED = 5
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("My Pygame Game")
 
-x = 375
-y = 275
+#ריבוע
+x_re = WIDTH - PLAYER_SIZE
+y_re = 0
 
+#עיגול
+x_cir = PLAYER_SIZE
+y_cir = PLAYER_SIZE
+
+# איזה אובייקט בשליטה? True = ריבוע, False = עיגול
+controlling_rect = True
 
 async def main():
-    global x, y
+    global x_re, y_re, x_cir, y_cir
 
     running = True
 
@@ -27,21 +34,34 @@ async def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    controlling_rect = not controlling_rect  # החלף
 
         # INPUT
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_LEFT]:
-            x -= SPEED
+        if controlling_rect: #אם זה על מצב אמת
+            #ריבוע
+            if keys[pygame.K_LEFT]:
+                x_re -= SPEED
+            if keys[pygame.K_RIGHT]:
+                x_re += SPEED
+            if keys[pygame.K_UP]:
+                y_re -= SPEED
+            if keys[pygame.K_DOWN]:
+                y_re += SPEED
 
-        if keys[pygame.K_RIGHT]:
-            x += SPEED
-
-        if keys[pygame.K_UP]:
-            y -= SPEED
-
-        if keys[pygame.K_DOWN]:
-            y += SPEED
+        else:
+            #עיגול
+            if keys[pygame.K_LEFT]:
+                x_cir -= SPEED
+            if keys[pygame.K_RIGHT]:
+                x_cir += SPEED
+            if keys[pygame.K_UP]:
+                y_cir -= SPEED
+            if keys[pygame.K_DOWN]:
+                y_cir += SPEED
 
         # DRAW
         screen.fill((30, 30, 60)) #RGB
@@ -49,9 +69,15 @@ async def main():
         pygame.draw.rect(
             screen,
             (255, 200, 50),
-            (x, y, PLAYER_SIZE, PLAYER_SIZE)
+            (x_re, y_re, PLAYER_SIZE, PLAYER_SIZE)
         )
 
+        pygame.draw.circle(
+            screen,
+            (100, 200, 255),
+            (x_cir, y_cir, PLAYER_SIZE, PLAYER_SIZE)
+        )
+        
         pygame.display.flip()
 
         # Required for running Pygame in the browser
