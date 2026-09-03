@@ -17,8 +17,8 @@ x_re = WIDTH - PLAYER_SIZE
 y_re = 0
 
 #עיגול
-x_cir = PLAYER_SIZE
-y_cir = PLAYER_SIZE
+x_cir = 0
+y_cir = 0
 
 # איזה אובייקט בשליטה? True = ריבוע, False = עיגול
 controlling_rect = True
@@ -64,7 +64,7 @@ async def main():
                 y_cir += SPEED
 
         # DRAW
-        screen.fill((30, 30, 60)) #RGB
+        screen.fill((30, 30, 50)) #RGB
 
         pygame.draw.rect(
             screen,
@@ -82,8 +82,8 @@ async def main():
         y_re = max(0, min(y_re, HEIGHT - PLAYER_SIZE))
 
         #עיגול
-        x_cir = max(radius, min(x_cir, WIDTH - radius))
-        y_cir = max(radius, min(y_cir, HEIGHT - radius))
+        x_cir = max(PLAYER_SIZE // 2, min(x_cir, WIDTH - PLAYER_SIZE // 2))
+        y_cir = max(PLAYER_SIZE // 2, min(y_cir, HEIGHT - PLAYER_SIZE // 2))
         
         pygame.display.flip()
 
