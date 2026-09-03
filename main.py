@@ -77,6 +77,13 @@ async def main():
             (100, 200, 255),
             (x_cir, y_cir)), PLAYER_SIZE //2 #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
         )
+        #ריבוע
+        x_re = max(0, min(x, WIDTH - PLAYER_SIZE))
+        y_re = max(0, min(y, HEIGHT - PLAYER_SIZE))
+
+        #עיגול
+        x_cir = max(0, min(x, WIDTH - PLAYER_SIZE))
+        y_cir = max(0, min(y, HEIGHT - PLAYER_SIZE))
         
         pygame.display.flip()
 
