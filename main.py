@@ -23,6 +23,19 @@ y_cir = 0
 # איזה אובייקט בשליטה? True = ריבוע, False = עיגול
 controlling_rect = True
 
+def check_collision(rect_x, rect_y, circle_x, circle_y):
+    """בדיקה אם העיגול נוגע בריבוע"""
+    # מרחק מרכז העיגול לקצוות הריבוע הקרובים ביותר
+    closest_x = max(rect_x, min(circle_x, rect_x + PLAYER_SIZE))
+    closest_y = max(rect_y, min(circle_y, rect_y + PLAYER_SIZE))
+    
+    # מרחק בין מרכז העיגול לנקודה הקרובה ביותר בריבוע
+    distance = ((circle_x - closest_x)**2 + (circle_y - closest_y)**2)**0.5
+    
+    # בדיקה אם המרחק קטן מרדיוס העיגול
+    return distance < PLAYER_SIZE // 2
+
+
 async def main():
     global x_re, y_re, x_cir, y_cir ,controlling_rect
 
@@ -35,13 +48,7 @@ async def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    controlling_rect = not controlling_rect  # החלף
-                if event.key == pygame.K_s:
-                # החלף בין מיקומי העיגול והריבוע
-                    x_re, x_cir = x_cir, x_re
-                    y_re, y_cir = y_re, y_cir
-
+               
         # INPUT
         keys = pygame.key.get_pressed()
 
