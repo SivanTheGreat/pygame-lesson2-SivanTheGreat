@@ -2,7 +2,7 @@ import asyncio
 import pygame
 import random
 
-# הכנת Pygame לעבודה והגדרת גופן להצגת טקסט.
+# אתחול Pygame והגדרת גופן לשימוש בהצגת טקסט במשחק.
 pygame.init()
 score_font = pygame.font.Font(None, 36)
 
@@ -41,11 +41,14 @@ was_touching = False #אם הריבוע והעיגול נוגעים
 def random_free_position(radius, other_x, other_y, other_radius):
     # מחפשים מיקום אקראי שבו העיגול החדש לא ייגע באובייקטים אחרים.
     while True:
+        # בוחרים את מרכז העיגול כך שכל העיגול יישאר בתוך המסך.
         candidate_x = random.randint(radius, WIDTH - radius)
         candidate_y = random.randint(radius, HEIGHT - radius)
 
+        # מוצאים את הנקודה בריבוע שהכי קרובה למרכז העיגול.
         closest_x = max(x_re, min(candidate_x, x_re + PLAYER_SIZE))
         closest_y = max(y_re, min(candidate_y, y_re + PLAYER_SIZE))
+        # במקום לחשב את המרחק בעזרת שורש ריבועי, משווים את ריבועי המרחקים.
         square_distance = (
             (candidate_x - closest_x) ** 2
             + (candidate_y - closest_y) ** 2
@@ -59,6 +62,7 @@ def random_free_position(radius, other_x, other_y, other_radius):
         if (
             square_distance > radius ** 2
             and circles_distance > (radius + other_radius) ** 2):
+            # מחזירים את המיקום רק לאחר שעבר את שתי בדיקות המרחק.
             return candidate_x, candidate_y
 
 
@@ -135,7 +139,7 @@ async def main():
 
         pygame.draw.circle(
             screen,
-            (100, 200, 255),
+            (50, 200, 80),
             (x_cir, y_cir), RADIUS #רדיוס הוא חצי מכל האורך כלומר חצי מהקוטר
         )
 
@@ -145,15 +149,15 @@ async def main():
             (220, 50, 50),
             (x_boom, y_boom), BOOM_RADIUS
         )
-        #ריבוע
+        # מגבילים את הריבוע כדי שלא יוכל לצאת מגבולות החלון.
         x_re = max(0, min(x_re, WIDTH - PLAYER_SIZE))
         y_re = max(0, min(y_re, HEIGHT - PLAYER_SIZE))
 
-        #עיגול
+        # מגבילים גם את העיגול, לפי הרדיוס שלו, כדי שלא ייחתך בקצה המסך.
         x_cir = max(RADIUS, min(x_cir, WIDTH - RADIUS))
         y_cir = max(RADIUS, min(y_cir, HEIGHT - RADIUS))
 
-        # בדיקה מדויקת אם המרחק בין הריבוע לעיגול קטן מרדיוס העיגול.
+        # בודקים אם המרחק בין מרכז העיגול לנקודה הקרובה בריבוע קטן מהרדיוס.
         closest_x = max(x_re, min(x_cir, x_re + PLAYER_SIZE))
         closest_y = max(y_re, min(y_cir, y_re + PLAYER_SIZE))
         distance_x = x_cir - closest_x
@@ -163,6 +167,7 @@ async def main():
             <= RADIUS ** 2
         )
 
+        # אותה בדיקה עבור העיגול האדום, שמעניש את השחקן במגע.
         boom_closest_x = max(x_re, min(x_boom, x_re + PLAYER_SIZE))
         boom_closest_y = max(y_re, min(y_boom, y_re + PLAYER_SIZE))
         boom_distance_x = x_boom - boom_closest_x
