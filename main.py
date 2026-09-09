@@ -14,10 +14,11 @@ RADIUS = 30
 BOOM_RADIUS = 25
 SPEED = 5
 RESET_BUTTON = pygame.Rect(10, HEIGHT - 50, 120, 40)
-GAME_DURATION = 20
+TOTAL_TIME = 40
 
 # המשתנה score שומר את הניקוד הנוכחי של השחקן.
 score = 0
+show_start_message = True
 
 # יצירת חלון המשחק וקביעת הכותרת שלו.
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -74,7 +75,7 @@ x_boom, y_boom = random_free_position(
 def reset_game():
     # החזרת כל האובייקטים והניקוד למצב ההתחלתי.
     global x_re, y_re, x_cir, y_cir, x_boom, y_boom
-    global score, was_touching, RADIUS
+    global score, was_touching, RADIUS, show_start_message
 
     RADIUS = 30
     x_re = WIDTH - PLAYER_SIZE
@@ -83,6 +84,8 @@ def reset_game():
     y_cir = RADIUS
     score = 0
     was_touching = False
+    show_start_message = True
+
     x_boom, y_boom = random_free_position(
         BOOM_RADIUS, x_cir, y_cir, RADIUS
     )
@@ -91,7 +94,7 @@ def reset_game():
 
 async def main():
     global x_re, y_re, x_cir, y_cir, x_boom, y_boom
-    global score, was_touching, RADIUS
+    global score, was_touching, RADIUS, show_start_message
 
     running = True
     was_touching = False
@@ -102,12 +105,14 @@ async def main():
 
         # הזמן ב-Pygame נמדד באלפיות שנייה, לכן מחלקים ב-1000 לשניות.
         seconds_passed = (pygame.time.get_ticks() - game_start_time) // 1000
-        remaining_seconds = max(0, GAME_DURATION - seconds_passed)
+        remaining_seconds = max(0, TOTAL_TIME - seconds_passed)
 
         # EVENTS: בדיקה אם המשתמש סגר את החלון או לחץ על Reset.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False               
+            if event.type == pygame.KEYDOWN:
+                show_start_message = False
             if (
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
@@ -130,6 +135,15 @@ async def main():
 
         # DRAW: ניקוי המסך וציור כל האובייקטים מחדש בכל סיבוב.
         screen.fill((30, 30, 50)) #RGB
+
+        if show_start_message:
+            game_start_text = score_font.render(
+                "Start game", True, (255, 255, 255)
+            )
+            game_start_position = game_start_text.get_rect(
+                center=(WIDTH // 2, HEIGHT // 2)
+            )
+            screen.blit(game_start_text, game_start_position)
 
         pygame.draw.rect(
             screen,
@@ -206,19 +220,29 @@ async def main():
 
         # הצגת הזמן שנותר בפינה השמאלית העליונה.
         timer_text = score_font.render(
-            f"Time: {remaining_seconds}", True, (255, 255, 255)
+            f"Time left: {remaining_seconds}", True, (255, 255, 255)
         )
         screen.blit(timer_text, (10, 10))
 
         # כשהזמן נגמר, מציגים הודעה ומפסיקים את תנועת הריבוע.
         if remaining_seconds == 0:
+            time_end_text = score_font.render(
+                "Time's up!", True, (255, 255, 255))
             game_over_text = score_font.render(
-                "Time's up!", True, (255, 255, 255)
+                "Game Over", True, (255, 255, 255))
+            final_score = score_font.render(
+                            f"Final Score: {score}", True, (255, 255, 255))
+            time_end_position = time_end_text.get_rect(
+                center=(WIDTH // 2, (HEIGHT // 2)-45)
             )
             game_over_position = game_over_text.get_rect(
-                center=(WIDTH // 2, HEIGHT // 2)
-            )
+                center=(WIDTH // 2, (HEIGHT // 2)-30))
+            final_score_position = final_score.get_rect(
+                            center=(WIDTH // 2, (HEIGHT // 2)+15))
             screen.blit(game_over_text, game_over_position)
+            screen.blit(time_end_text, time_end_position)
+            screen.blit(final_score, final_score_position)
+            
 
         # ציור כפתור Reset והטקסט שבתוכו.
         pygame.draw.rect(screen, (70, 130, 220), RESET_BUTTON)
