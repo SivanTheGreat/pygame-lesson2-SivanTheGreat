@@ -103,16 +103,20 @@ async def main():
 
     while running:
 
-        # הזמן ב-Pygame נמדד באלפיות שנייה, לכן מחלקים ב-1000 לשניות.
-        seconds_passed = (pygame.time.get_ticks() - game_start_time) // 1000
-        remaining_seconds = max(0, TOTAL_TIME - seconds_passed)
+        # הזמן מתחיל להיספר רק אחרי לחיצה על מקש.
+        if show_start_message:
+            remaining_seconds = TOTAL_TIME
+        else:
+            seconds_passed = (pygame.time.get_ticks() - game_start_time) // 1000
+            remaining_seconds = max(0, TOTAL_TIME - seconds_passed)
 
         # EVENTS: בדיקה אם המשתמש סגר את החלון או לחץ על Reset.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False               
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and show_start_message:
                 show_start_message = False
+                game_start_time = pygame.time.get_ticks()
             if (
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
@@ -123,7 +127,8 @@ async def main():
         # INPUT: , הזזת הריבוע בעזרת מקשי החצים כל עוד נשאר זמן., המקשים יכולים לפעול במקביל ויכולים לא לפעול בכלל
         keys = pygame.key.get_pressed()
 
-        if remaining_seconds > 0:
+        # מאפשרים תנועה רק אחרי שהכיתוב נעלם ועדיין נשאר זמן במשחק.
+        if not show_start_message and remaining_seconds > 0:
             if keys[pygame.K_LEFT]:
                 x_re -= SPEED
             if keys[pygame.K_RIGHT]:
@@ -236,7 +241,7 @@ async def main():
                 center=(WIDTH // 2, (HEIGHT // 2)-45)
             )
             game_over_position = game_over_text.get_rect(
-                center=(WIDTH // 2, (HEIGHT // 2)-30))
+                center=(WIDTH // 2, (HEIGHT // 2)-15))
             final_score_position = final_score.get_rect(
                             center=(WIDTH // 2, (HEIGHT // 2)+15))
             screen.blit(game_over_text, game_over_position)
